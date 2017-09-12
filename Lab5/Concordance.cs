@@ -28,13 +28,9 @@ namespace TLG.Concordance
 
         static void Main(string[] args)
         {
-            const int NUM_RUNS = 10;
-            Analyzer anlz = new Analyzer();
-            Stopwatch sw = new Stopwatch();
-            double timeElapsed = 0.0;
-            List<TimeSpan> timespans = new List<TimeSpan>();
-            double totalRunTime = 0.0;
-
+            
+            Analyzer anlz = new Analyzer();            
+            
             // Set up paths from args
             if (args.Length != 3)
             {
@@ -44,29 +40,9 @@ namespace TLG.Concordance
             GetPaths(args);
             // Get the input data
             ReadInputs();
-            // Identify paragraphs and sentences
-            // Identify words and their location
 
-            // Start and stop stopwatch object
-            for (int i = 0; i < NUM_RUNS; ++i)
-            {
-                sw.Start();
-                anlz.Analyze(inputText);
-                sw.Stop();
-
-                // Display stopwatch time
-                timespans.Add(new TimeSpan());
-                timespans[i] = sw.Elapsed;
-                timeElapsed = timespans[i].TotalMilliseconds;
-                WriteLine($"Runtime is {timeElapsed}ms");
-            }
-
-            foreach (TimeSpan timespan in timespans)
-            {
-                totalRunTime += timespan.TotalMilliseconds;
-            }
-
-            WriteLine($"\nAverage run time = {totalRunTime / NUM_RUNS}ms");
+            // ***This method times the code in Analyzer.cs***
+            TimeAnalyzer(anlz);            
 
             // SQL connection strings are very unforgiving as to content and punctuation;
             // A good way to obtain one is to set a data connection in the Visual Studio
@@ -129,6 +105,38 @@ namespace TLG.Concordance
             }
             ReadKey();
         } // End Main()
+
+        private static void TimeAnalyzer(Analyzer anlz)
+        {
+            const int NUM_RUNS = 10;
+            Stopwatch sw = new Stopwatch();
+            double timeElapsed = 0.0;
+            List<TimeSpan> timespans = new List<TimeSpan>();
+            double totalRunTime = 0.0;
+
+            // Start and stop stopwatch object
+            for (int i = 0; i < NUM_RUNS; ++i)
+            {
+                sw.Start();
+                // Identify paragraphs and sentences
+                // Identify words and their location
+                anlz.Analyze(inputText);
+                sw.Stop();
+
+                // Display stopwatch time
+                timespans.Add(new TimeSpan());
+                timespans[i] = sw.Elapsed;
+                timeElapsed = timespans[i].TotalMilliseconds;
+                WriteLine($"Runtime is {timeElapsed}ms");
+            }
+
+            foreach (TimeSpan timespan in timespans)
+            {
+                totalRunTime += timespan.TotalMilliseconds;
+            }
+
+            WriteLine($"\nAverage run time = {totalRunTime / NUM_RUNS}ms");
+        }
 
         static void ReadInputs()
         {
